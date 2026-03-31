@@ -124,7 +124,7 @@ class BaseTransformer:
         """
         Add or overwrite ``time_period`` and ``time_identifier`` columns.
 
-        *time_period* should be in the format ``YYYYYYYY`` (e.g. ``"202122"``).
+        *time_period* should be in the format ``YYYYYY`` (e.g. ``"202122"``).
         """
         return df.withColumn("time_period", F.lit(time_period)).withColumn(
             "time_identifier", F.lit(time_identifier)
