@@ -1,0 +1,30 @@
+# Core LLM / Agent Framework
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.20
+langgraph>=0.0.20
+openai>=1.10.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Pydantic (LangChain v2 requires >=2)
+pydantic>=2.5.0
+
+# Web UI
+streamlit>=1.31.0
+plotly>=5.18.0
+
+# Vector Search (optional - FAISS backend)
+faiss-cpu>=1.7.4
+
+# Databricks Integration (optional)
+databricks-sql-connector>=3.0.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Utilities
+python-dotenv>=1.0.0
