@@ -361,7 +361,7 @@ if __name__ == "__main__":
             "sex": rng.choice(["Boys", "Girls", "Total"], n),
             "pupil_count": rng.integers(100, 50000, n),
             "average_score": rng.uniform(0, 25, n),
-            "mtc_score": rng.integers(0, 26, n),  # one value out of range (25 is max)
+            "mtc_score": rng.integers(0, 27, n),  # includes values > 25 (out of range) to test validation
         }
     )
 

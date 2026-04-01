@@ -153,7 +153,7 @@ class EmbeddingPipeline:
                 continue
             # Further split if too large
             for j in range(0, len(section), max_chars):
-                chunk_text = section[j: j + max_chars].strip()
+                chunk_text = section[j:j + max_chars].strip()
                 if chunk_text:
                     chunks.append(
                         Document(
