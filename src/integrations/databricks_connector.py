@@ -34,7 +34,7 @@ class DatabricksConfig(BaseModel):
     http_path: str = Field(description="SQL warehouse HTTP path")
     access_token: Optional[str] = Field(default=None, description="Personal access token (PAT)")
     catalog: str = Field(default="edu_insights", description="Unity Catalog catalog name")
-    schema: str = Field(default="bronze", description="Default schema")
+    default_schema: str = Field(default="bronze", description="Default schema")
     timeout: int = Field(default=300, description="Query timeout in seconds")
 
     @classmethod
