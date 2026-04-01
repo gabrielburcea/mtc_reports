@@ -55,7 +55,7 @@ class ReportOnboardingAgent:
         logger.info("Report Onboarding Agent initialized")
     
     
-def start_onboarding(self, report_name: str) -> str:
+    def start_onboarding(self, report_name: str) -> str:
         """Begin the onboarding process"""
         
         prompt = f"""
@@ -79,7 +79,7 @@ You can list multiple tables.
         return prompt
     
     
-def discover_tables(self, user_response: str, available_tables: List[str]) -> Dict:
+    def discover_tables(self, user_response: str, available_tables: List[str]) -> Dict:
         """Extract mentioned tables from user response"""
         
         prompt = f"""
@@ -101,7 +101,7 @@ Extract which tables they need. Return JSON:
         return json.loads(response.content)
     
     
-def map_columns(self, source_tables: List[str], target_columns: List[str]) -> Dict:
+    def map_columns(self, source_tables: List[str], target_columns: List[str]) -> Dict:
         """Help user map source columns to output columns"""
         
         prompt = f"""
@@ -120,7 +120,7 @@ Let's go through them one by one. First target column: {target_columns[0]}
 """
         return prompt
     
-def generate_sql_template(self, 
+    def generate_sql_template(self, 
         source_tables: List[str],
         column_mappings: Dict[str, Dict],
         business_logic: Dict
@@ -172,7 +172,7 @@ FROM {from_clause}
         return sql
     
     
-def validate_template(self, sql: str) -> Dict:
+    def validate_template(self, sql: str) -> Dict:
         """Validate the generated SQL template"""
         
         # In production, this would execute against a sample dataset
@@ -185,7 +185,7 @@ def validate_template(self, sql: str) -> Dict:
         }
     
     
-def register_report(self, 
+    def register_report(self, 
         report_name: str,
         report_type: str,
         source_tables: List[str],
@@ -252,7 +252,7 @@ INSERT INTO report_dependencies VALUES (
         return registration_sql
     
     
-def run_interactive_session(self, report_name: str):
+    def run_interactive_session(self, report_name: str):
         """Run full interactive onboarding session"""
         
         print("=" * 80)

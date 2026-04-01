@@ -189,7 +189,7 @@ class OrchestratorAgent:
         """Build context-aware system prompt"""
         
         reports_context = "\n".join([
-            f"- {{r['report_name']}} (type: {{r['report_type']}}, subtype: {{r['report_subtype']}})"
+            f"- {r['report_name']} (type: {r['report_type']}, subtype: {r['report_subtype']})"
             for r in self.available_reports
         ])
         
@@ -258,7 +258,7 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
         # Use structured output (function calling)
         messages = [
             SystemMessage(content=system_prompt),
-            HumanMessage(content=f"User query: {{user_query}}")
+            HumanMessage(content=f"User query: {user_query}")
         ]
         
         # Use with_structured_output for guaranteed schema compliance
@@ -266,16 +266,16 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
         
         try:
             parsed = structured_llm.invoke(messages)
-            logger.info(f"Parsed query: {{parsed}}")
+            logger.info(f"Parsed query: {parsed}")
             return parsed
             
         except Exception as e:
-            logger.error(f"Query parsing failed: {{e}}")
+            logger.error(f"Query parsing failed: {e}")
             return ParsedQuery(
                 intent=Intent.UNKNOWN,
                 natural_language_query=user_query,
                 confidence=0.0,
-                clarification_needed=f"Failed to parse query: {{str(e)}}"
+                clarification_needed=f"Failed to parse query: {str(e)}"
             )
     
     
@@ -302,7 +302,7 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
         }
         
         next_agent = routing_map.get(intent, "clarification_agent")
-        logger.info(f"Routing intent '{{intent}}' to agent '{{next_agent}}'")
+        logger.info(f"Routing intent '{intent}' to agent '{next_agent}'")
         
         return next_agent
     
@@ -330,13 +330,13 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
             # Suggest options based on report type
             if parsed_query.report_type == ReportType.MTC:
                 subtypes = [r['report_subtype'] for r in self.available_reports if r['report_type'] == 'MTC']
-                missing_info.append(f"which specific report: {{', '.join(subtypes)}}")
+                missing_info.append(f"which specific report: {', '.join(subtypes)}")
         
         if not parsed_query.time_periods:
             missing_info.append("which academic year(s)")
         
         if missing_info:
-            return f"I need clarification on: {{'; '.join(missing_info)}}. Could you provide more details?"
+            return f"I need clarification on: {'; '.join(missing_info)}. Could you provide more details?"
         
         return "I'm not sure I understood your request. Could you rephrase it?"
     
@@ -376,7 +376,7 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
     
     def route_node(self, state: OrchestratorState) -> OrchestratorState:
         """LangGraph node: Route to appropriate agent"""
-        logger.info(f"Executing route_node -> {{state['next_agent']}}")
+        logger.info(f"Executing route_node -> {state['next_agent']}")
         
         # In a full implementation, this would invoke the actual specialized agent
         # For now, just prepare the routing information
@@ -392,19 +392,20 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
         
         state["final_response"] = (
             f"✓ Query understood!\n"
-            f"Intent: {{parsed.intent.value}}\n"
-            f"Report: {{parsed.report_type.value if parsed.report_type else 'N/A'}} - {{parsed.report_subtype or 'N/A'}}\n"
-            f"Time periods: {{', '.join(parsed.time_periods) if parsed.time_periods else 'N/A'}}\n"
-            f"Routing to: {{agent_name}}\n"
-            f"Confidence: {{parsed.confidence:.0%}}"
+            f"Intent: {parsed.intent.value}\n"
+            f"Report: {parsed.report_type.value if parsed.report_type else 'N/A'} - {parsed.report_subtype or 'N/A'}\n"
+            f"Time periods: {', '.join(parsed.time_periods) if parsed.time_periods else 'N/A'}\n"
+            f"Routing to: {agent_name}\n"
+            f"Confidence: {parsed.confidence:.0%}"
         )
         
         return state
     
     
     def _build_graph(self) -> StateGraph:
-        """Build the LangGraph orchestration workflow"""
-        
+        """
+        Build the LangGraph orchestration workflow.
+
         Workflow:
         1. Parse query
         2. If low confidence -> Clarification
@@ -441,16 +442,17 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
     
     
     def process_query(self, user_query: str, context: Optional[Dict] = None) -> Dict:
-        """Main entry point: Process a user query end-to-end"""
-        
+        """
+        Main entry point: Process a user query end-to-end.
+
         Args:
             user_query: Natural language input from user
             context: Optional additional context (user info, session data, etc.)
-            
+
         Returns:
             Dict with response and metadata
         """
-        logger.info(f"Processing query: {{user_query}}")
+        logger.info(f"Processing query: {user_query}")
         
         initial_state: OrchestratorState = {
             "user_query": user_query,
@@ -474,10 +476,10 @@ Return your analysis as structured JSON matching the ParsedQuery schema."""
             }
             
         except Exception as e:
-            logger.error(f"Orchestrator failed: {{e}}", exc_info=True)
+            logger.error(f"Orchestrator failed: {e}", exc_info=True)
             return {
                 "status": "error",
-                "response": f"I encountered an error processing your request: {{str(e)}}",
+                "response": f"I encountered an error processing your request: {str(e)}",
                 "error": str(e)
             }
 
@@ -509,15 +511,15 @@ if __name__ == "__main__":
     print("=" * 80)
     
     for query in test_queries:
-        print(f"\n📝 Query: {{query}}")
+        print(f"\n📝 Query: {query}")
         print("-" * 80)
         
         result = agent.process_query(query)
         
-        print(f"Status: {{result['status']}}")
-        print(f"\nResponse:\n{{result['response']}}")
+        print(f"Status: {result['status']}")
+        print(f"\nResponse:\n{result['response']}")
         
         if result.get('parsed_query'):
-            print(f"\nParsed Query:\n{{json.dumps(result['parsed_query'], indent=2)}}")
+            print(f"\nParsed Query:\n{json.dumps(result['parsed_query'], indent=2)}")
         
         print("\n" + "=" * 80)
